@@ -3,6 +3,7 @@
 #include <iostream>
 #include <math.h>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -37,6 +38,8 @@ public:
 	}
 	pair<double, double> DoAlgorithm()
 	{
+		string path = "output.csv";
+		ofstream write(path, ios_base::out);
 		N = test_number();
 		double c = 0; 
 		double _x_lenght = abs(x_1.first - x_0.first),
@@ -45,14 +48,22 @@ public:
 		pair<double, double> _xk =x_0, _x_min=x_0;
 		for (int i = 0; i < N; i++)
 		{
-			c=((double)rand()*1+1) / RAND_MAX;
-			_xk.first = _x_lenght*c + x_0.first;
-			_xk.second = _y_lenght*c + x_0.second;
-			if (Function(_xk) < _min_func)
+			
+				c = ((double)rand() * 1 + 1) / RAND_MAX;
+				_xk.first = _x_lenght*c + x_0.first;
+				_xk.second = _y_lenght*c + x_0.second;
+			if (_xk.first + _xk.second <= 1)
 			{
-				_min_func = Function(_xk);
-				_x_min = _xk;
+
+				if (Function(_xk) < _min_func)
+				{
+					_min_func = Function(_xk);
+					_x_min = _xk;
+				}
+				
 			}
+			
+			write << setprecision(12) << _xk.first << ";" << _xk.second << ";" << Function(_xk) << endl;
 			countIter++;
 		}
 		return _x_min;

@@ -34,21 +34,34 @@ public:
 		pair<double, double> _xk = x_0, _x_min = x_0;
 		for (int i = 0; i < N; i++)
 		{
-			c = ((double)rand()*1+1 ) / RAND_MAX;
-			_xk.first = _x_lenght*c + x_0.first;
-			_xk.second = _y_lenght*c + x_0.second;
-			if (Function(_xk) < _min_func)
-			{
-				_min_func = Function(_xk);
-				_x_min = _xk;
-			}
+			
+				c = ((double)rand() * 1 + 1) / RAND_MAX;
+				_xk.first = _x_lenght*c + x_0.first;
+				_xk.second = _y_lenght*c + x_0.second;
+			
+				if (_xk.first + _xk.second <= 1)
+				{
+
+					if (Function(_xk) < _min_func)
+					{
+						_min_func = Function(_xk);
+						_x_min = _xk;
+					}
+				}
 
 		}
 		return _x_min;
 	}
+	long int test_number()
+	{
+		_V = abs((x_0.second - x_0.first)*(x_1.second - x_1.first));
+		_V_eps = _EPS1*_EPS2;
+		_P_eps = _V_eps / _V; //Вероятность попадания в эту окрестность при одном испытании равна
+		return abs(log(1 - _P) / log(1 - _P_eps));//число испытаний
+	}
 	pair<double, double> DoAlgorithm()
 	{
-		int N = 90;
+		int N;
 		pair<double, double> _xk = x_0, _x_min = x_0;
 		pair<pair<double, double>, pair<double, double>> X;
 		X.first = x_0;
@@ -57,6 +70,7 @@ public:
 		{
 			countIter++;
 			_xk = _x_min;
+			N = test_number();
 			_x_min = rand_search(X,N);
 			x_0.first = _x_min.first + (x_0.second - x_0.first) / (2 * _alpha);
 			x_1.first = _x_min.first  -(x_0.second - x_0.first) / (2 * _alpha);
